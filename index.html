@@ -85,8 +85,8 @@
     const runCounters = () => document.querySelectorAll('[data-count]').forEach(el => { let end=+el.dataset.count, n=0; const tick=()=>{ n+=Math.max(1,Math.ceil(end/32)); el.textContent=Math.min(n,end); if(n<end) requestAnimationFrame(tick); }; tick(); });
     new IntersectionObserver(entries => { if(entries.some(e=>e.isIntersecting)){runCounters();} }, {threshold:.3}).observe(document.querySelector('.counter'));
     const followerNumber = document.querySelector('#followerNumber'), followerInput = document.querySelector('#followerInput');
-    const savedFollowers = localStorage.getItem('poolcFollowers') || '0';
-    followerNumber.textContent = Number(savedFollowers).toLocaleString('es-AR'); followerInput.value = savedFollowers === '0' ? '' : savedFollowers;
+    const savedFollowers = localStorage.getItem('poolcFollowers') || '2251';
+    followerNumber.textContent = Number(savedFollowers).toLocaleString('es-AR'); followerInput.value = savedFollowers === '2251' ? '' : savedFollowers;
     document.querySelector('#saveFollowers').addEventListener('click', () => { const value = Math.max(0, Number(followerInput.value || 0)); localStorage.setItem('poolcFollowers', String(value)); followerNumber.textContent = value.toLocaleString('es-AR'); notice.textContent = '¡Contador actualizado!'; });
     document.querySelectorAll('[data-answer]').forEach(button => button.addEventListener('click', () => { const won = button.dataset.answer === 'yes'; document.querySelector('#quizResult').textContent = won ? '¡Correcto! TikTok es el lugar para ver los clips. Ganaste un punto.' : 'Casi. Inténtalo de nuevo.'; if (won) award(); }));
     document.querySelectorAll('a[href*="tiktok.com"]').forEach(link => link.addEventListener('click', award));
