@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pool.c | Mini creador</title>
+  <style>
+    :root { --blue:#168cff; --orange:#ff8a00; --ink:#07101f; --white:#f7fbff; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--white); font-family:Impact, Haettenschweiler, "Arial Narrow Bold", system-ui, sans-serif; background:radial-gradient(circle at 80% 0%, #172d5e 0, transparent 28%), #050914; letter-spacing:.04em; }
+    a { color:inherit; text-decoration:none; }
+    .wrap { width:min(1120px, calc(100% - 32px)); margin:auto; }
+    nav { position:sticky; top:0; z-index:5; backdrop-filter:blur(14px); background:#050914d9; border-bottom:1px solid #1b355c; }
+    nav .wrap { min-height:66px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
+    .brand { font-size:1.65rem; color:var(--orange); text-shadow:2px 2px 0 #000; }
+    .links { display:flex; gap:16px; font-family:system-ui,sans-serif; font-size:.79rem; font-weight:800; }
+    .hero { min-height:690px; display:grid; align-items:center; overflow:hidden; position:relative; border-bottom:4px solid var(--orange); background:linear-gradient(90deg, #050914 15%, #050914aa 50%, transparent), url('pauloc-poster.png') center/cover; }
+    .hero:after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(120deg, transparent 45%, #168cff1c 60%, #ff8a0014); }
+    .hero-copy { z-index:1; position:relative; max-width:610px; padding:76px 0; }
+    .eyebrow { display:inline-block; padding:7px 11px; background:var(--blue); transform:skew(-10deg); font:800 .76rem system-ui,sans-serif; }
+    h1 { margin:.28em 0 0; font-size:clamp(3.5rem, 10vw, 8.3rem); line-height:.83; text-transform:uppercase; text-shadow:5px 5px 0 #000; }
+    h1 span { color:var(--orange); }
+    .hero p { font:500 1.07rem/1.6 system-ui,sans-serif; max-width:450px; letter-spacing:0; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+    button,.button { border:0; cursor:pointer; padding:15px 20px; text-transform:uppercase; font:900 .87rem system-ui,sans-serif; letter-spacing:.07em; transition:.2s transform,.2s filter; }
+    button:hover,.button:hover { transform:translateY(-3px); filter:brightness(1.16); }
+    .primary { background:var(--orange); color:#14100a; box-shadow:5px 5px 0 var(--white); }
+    .secondary { background:var(--blue); color:var(--white); box-shadow:5px 5px 0 #000; }
+    section { padding:84px 0; }
+    .title { font-size:clamp(2rem,5vw,4rem); margin:0 0 10px; text-transform:uppercase; }
+    .title em { color:var(--orange); font-style:normal; }
+    .intro { font:400 1rem/1.6 system-ui,sans-serif; color:#b8c9e5; letter-spacing:0; max-width:650px; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:30px; }
+    .card { min-height:220px; padding:26px; background:linear-gradient(145deg,#102142,#0a1020); border:1px solid #244a80; border-bottom:4px solid var(--blue); }
+    .card:nth-child(2) { border-bottom-color:var(--orange); }
+    .card strong { display:block; font-size:1.75rem; margin-bottom:9px; }
+    .card p { font:400 .94rem/1.55 system-ui,sans-serif; letter-spacing:0; color:#c3d1e8; }
+    .counter { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:32px 0; }
+    .stat { text-align:center; padding:24px 10px; background:#0b1529; border-top:2px solid var(--orange); }
+    .stat b { display:block; font-size:2.6rem; color:var(--blue); }
+    .stat span { font:700 .75rem system-ui,sans-serif; color:#c7d2e3; }
+    .support { background:linear-gradient(105deg,#ff8a00,#ef4d08); color:#100b06; }
+    .support .title { max-width:700px; }
+    .support p { font:500 1.05rem/1.55 system-ui,sans-serif; letter-spacing:0; max-width:600px; }
+    #notice { min-height:24px; margin-top:20px; font:800 .95rem system-ui,sans-serif; }
+    footer { padding:36px 0; color:#a9bddc; font:500 .85rem system-ui,sans-serif; letter-spacing:0; }
+    .tiktok-panel { display:grid; grid-template-columns:1.1fr .9fr; gap:18px; margin-top:30px; }
+    .follow-card,.quiz { padding:30px; background:linear-gradient(145deg,#111c36,#07101f); border:1px solid #27528f; border-bottom:5px solid var(--orange); }
+    .follow-card h3,.quiz h3 { margin:0 0 8px; font-size:1.7rem; }
+    .follower-number { display:block; margin:13px 0; color:var(--orange); font-size:clamp(3rem,7vw,5rem); text-shadow:3px 3px 0 #000; }
+    .small { font:400 .86rem/1.5 system-ui,sans-serif; color:#c3d1e8; letter-spacing:0; }
+    input { width:100%; max-width:210px; padding:12px; border:2px solid var(--blue); background:#060b17; color:white; font:800 1rem system-ui,sans-serif; }
+    .quiz-options { display:grid; gap:10px; margin-top:18px; }
+    .quiz-options button { text-align:left; background:#172a4b; color:white; border-left:5px solid var(--blue); }
+    .quiz-result { margin-top:16px; min-height:52px; padding:12px; background:#08111f; font:700 .92rem/1.4 system-ui,sans-serif; color:#d6e5ff; letter-spacing:0; }
+    .badge { display:none; margin-top:14px; padding:13px; background:var(--orange); color:#1c1000; font:900 .95rem system-ui,sans-serif; text-align:center; }
+    .badge.show { display:block; }
+    .player-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:30px; }
+    .player-card { padding:30px; background:#0a1428; border:1px solid #27528f; }
+    .form-row { display:grid; gap:10px; margin:16px 0; }
+    .player-card input { max-width:none; }
+    .profile-output { min-height:150px; padding:18px; background:#07101f; border-left:5px solid var(--orange); font:500 .95rem/1.6 system-ui,sans-serif; letter-spacing:0; color:#d5e4fb; }
+    @media (max-width:700px) { .links { display:none; } .hero { min-height:620px; background-position:63% center; } .grid,.counter,.tiktok-panel,.player-grid { grid-template-columns:1fr; } section { padding:58px 0; } }
+  </style>
+</head>
+<body>
+  <nav><div class="wrap"><a class="brand" href="#inicio">POOL.C</a><div class="links"><a href="#sobre-mi">SOBRE MÍ</a><a href="#contenido">CONTENIDO</a><a href="https://www.tiktok.com/@poolc445" target="_blank" rel="noopener">TIKTOK @POOLC445</a><a href="#apoyo">APÓYAME</a></div></div></nav>
+  <main>
+    <section class="hero" id="inicio"><div class="wrap hero-copy"><span class="eyebrow">MINI CREADOR GAMER</span><h1>Pool.c<br><span>Free Fire</span></h1><p>Clips, partidas y momentos épicos. Entra al equipo, descubre mi contenido y acompáñame en cada nueva misión.</p><div class="actions"><a class="button primary" href="https://www.tiktok.com/@poolc445" target="_blank" rel="noopener">TikTok @poolc445</a><a class="button secondary" href="#apoyo">Apoyar al creador</a></div></div></section>
+    <section id="sobre-mi"><div class="wrap"><h2 class="title">¿Quién es <em>Pool.c?</em></h2><p class="intro">Un mini creador con una comunidad en crecimiento. Este espacio reúne novedades, retos, clips y una forma fácil de apoyar el contenido.</p><div class="counter"><div class="stat"><b data-count="24">0</b><span>CLIPS PUBLICADOS</span></div><div class="stat"><b data-count="7">0</b><span>RETOS ACTIVOS</span></div><div class="stat"><b data-count="100">0</b><span>% ACTITUD GAMER</span></div></div></div></section>
+    <section id="contenido"><div class="wrap"><h2 class="title">Explora el <em>contenido</em></h2><div class="grid"><article class="card"><strong>⚡ Clips rápidos</strong><p>Jugadas, reacciones y momentos para compartir con la comunidad.</p><a class="button secondary" href="https://www.tiktok.com/@poolc445" target="_blank" rel="noopener">Ver clips en TikTok</a></article><article class="card"><strong>🔥 Retos semanales</strong><p>Vota el próximo desafío y mira cómo lo intento en las partidas.</p><button class="primary" data-message="Tu voto cuenta: pronto podrás elegir el siguiente reto.">Elegir reto</button></article><article class="card"><strong>🎯 Novedades</strong><p>Actualizaciones de contenido, nuevos horarios y anuncios importantes.</p><button class="secondary" data-message="Activaste las novedades de Pool.c.">Activar novedades</button></article></div></div></section>
+    <section id="tiktok"><div class="wrap"><h2 class="title">La comunidad de <em>Pool.c</em></h2><p class="intro">Muestra tu crecimiento en TikTok y deja que cada visita participe en el reto de la comunidad.</p><div class="tiktok-panel"><article class="follow-card"><h3>Seguidores en TikTok</h3><span class="follower-number" id="followerNumber">0</span><p class="small">Actualiza esta cifra con tu total de seguidores. Se guarda en este navegador para que la página siempre se vea al día.</p><input id="followerInput" type="number" min="0" placeholder="Escribe tu total" aria-label="Total de seguidores" /><button class="primary" id="saveFollowers">Actualizar contador</button></article><article class="quiz"><h3>🎮 Reto relámpago</h3><p class="small" id="quizQuestion">¿Dónde puedes ver los clips de Pool.c?</p><div class="quiz-options"><button data-answer="no">En una biblioteca</button><button data-answer="yes">En TikTok</button><button data-answer="no">En una tienda</button></div><div class="quiz-result" id="quizResult">Responde para ganar tu insignia.</div><div class="badge" id="fanBadge">🏆 INSIGNIA DESBLOQUEADA: FAN DE POOL.C</div></article></div></div></section>
+    <section id="jugador"><div class="wrap"><h2 class="title">Ficha de <em>jugador</em></h2><p class="intro">Cada visitante puede registrar manualmente su nombre y su ID de jugador para conservar su ficha y sus logros en este navegador.</p><div class="player-grid"><article class="player-card"><h3>Registra tu perfil</h3><div class="form-row"><label class="small" for="playerName">Nombre de jugador</label><input id="playerName" maxlength="30" placeholder="Ej.: RayoAzul" /></div><div class="form-row"><label class="small" for="playerId">ID de jugador</label><input id="playerId" maxlength="30" placeholder="Ej.: 123456789" /></div><button class="primary" id="savePlayer">Guardar mi ficha</button></article><article class="player-card"><h3>Mi perfil</h3><div class="profile-output" id="profileOutput">Completa tu nombre y tu ID para mostrar tu ficha aquí.</div></article></div></div></section>
+    <section class="support" id="apoyo"><div class="wrap"><h2 class="title">Tu apoyo hace que el equipo <em>siga creciendo</em></h2><p>Comparte la página, sigue a Pool.c y vuelve por cada nuevo clip. Cada visita ayuda a que este proyecto llegue más lejos.</p><button class="primary" id="supportButton">¡Yo apoyo a Pool.c!</button><div id="notice" aria-live="polite"></div></div></section>
+  </main>
+  <footer><div class="wrap">© Pool.c · Mini creador gamer · Hecho para la comunidad.</div></footer>
+  <script>
+    const notice = document.querySelector('#notice');
+    const fanBadge = document.querySelector('#fanBadge');
+    let points = Number(localStorage.getItem('poolcPoints') || 0);
+    const award = () => { points += 1; localStorage.setItem('poolcPoints', String(points)); let title = points >= 6 ? '🏆 INSIGNIA DESBLOQUEADA: CAPITÁN DE LA ESCUADRA' : points >= 3 ? '🥇 INSIGNIA DESBLOQUEADA: FAN DE POOL.C' : '🎖️ INSIGNIA DESBLOQUEADA: EXPLORADOR DE CLIPS'; fanBadge.textContent = `${title} · ${points} punto${points === 1 ? '' : 's'}`; fanBadge.classList.add('show'); };
+    document.querySelectorAll('[data-message]').forEach(button => button.addEventListener('click', () => { notice.textContent = button.dataset.message; award(); document.querySelector('#apoyo').scrollIntoView({behavior:'smooth'}); }));
+    document.querySelector('#supportButton').addEventListener('click', () => { award(); notice.textContent = '¡Gracias por apoyar a Pool.c! Ganaste un punto de comunidad.'; });
+    const runCounters = () => document.querySelectorAll('[data-count]').forEach(el => { let end=+el.dataset.count, n=0; const tick=()=>{ n+=Math.max(1,Math.ceil(end/32)); el.textContent=Math.min(n,end); if(n<end) requestAnimationFrame(tick); }; tick(); });
+    new IntersectionObserver(entries => { if(entries.some(e=>e.isIntersecting)){runCounters();} }, {threshold:.3}).observe(document.querySelector('.counter'));
+    const followerNumber = document.querySelector('#followerNumber'), followerInput = document.querySelector('#followerInput');
+    const savedFollowers = localStorage.getItem('poolcFollowers') || '0';
+    followerNumber.textContent = Number(savedFollowers).toLocaleString('es-AR'); followerInput.value = savedFollowers === '0' ? '' : savedFollowers;
+    document.querySelector('#saveFollowers').addEventListener('click', () => { const value = Math.max(0, Number(followerInput.value || 0)); localStorage.setItem('poolcFollowers', String(value)); followerNumber.textContent = value.toLocaleString('es-AR'); notice.textContent = '¡Contador actualizado!'; });
+    document.querySelectorAll('[data-answer]').forEach(button => button.addEventListener('click', () => { const won = button.dataset.answer === 'yes'; document.querySelector('#quizResult').textContent = won ? '¡Correcto! TikTok es el lugar para ver los clips. Ganaste un punto.' : 'Casi. Inténtalo de nuevo.'; if (won) award(); }));
+    document.querySelectorAll('a[href*="tiktok.com"]').forEach(link => link.addEventListener('click', award));
+    const playerName = document.querySelector('#playerName'), playerId = document.querySelector('#playerId'), profileOutput = document.querySelector('#profileOutput');
+    const renderProfile = () => { const profile = JSON.parse(localStorage.getItem('poolcPlayer') || 'null'); if (!profile) return; playerName.value = profile.name; playerId.value = profile.id; profileOutput.textContent = `${profile.name} · ID de jugador: ${profile.id} · Insignias obtenidas: ${points} punto${points === 1 ? '' : 's'} de comunidad.`; };
+    document.querySelector('#savePlayer').addEventListener('click', () => { const name = playerName.value.trim(), id = playerId.value.trim(); if (!name || !id) { profileOutput.textContent = 'Completa tu nombre y tu ID de jugador.'; return; } localStorage.setItem('poolcPlayer', JSON.stringify({name, id})); renderProfile(); award(); notice.textContent = '¡Ficha guardada! Ganaste un punto de comunidad.'; });
+    renderProfile();
+  </script>
+</body>
+</html>
